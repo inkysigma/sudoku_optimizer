@@ -2,21 +2,21 @@ import numpy as np
 import time
 import pandas
 import pygad
+from numba import jit
 
 PENALTY_DOUBLE_COUNT = -1
 
 
+@jit(nopython=True)
 def mismatch(x, verbose=False):
     counter = 0
     for v in range(9):
-        counter += np.sum(np.sum(x[:, :] == v, axis=0) - 1)
-        if verbose:
-            print(np.sum(x[:, :] == v, axis=0))
-        counter += np.sum(np.sum(x[:, :] == v, axis=1) - 1)
+        counter += np.sum(np.abs(np.sum(x[:, :] == v, axis=0) - 1))
+        counter += np.sum(np.abs(np.sum(x[:, :] == v, axis=1) - 1))
         for k in range(9):
             row, column = k // 3, k % 3
-            counter += np.sum(x[3 * row:3 * row+3, 3 *
-                              column: 3 * column+3] == v) - 1
+            counter += np.abs(np.sum(x[3 * row:3 * row+3, 3 *
+                              column: 3 * column+3] == v) - 1)
 
     return counter * PENALTY_DOUBLE_COUNT
 
@@ -54,6 +54,7 @@ def process_solution(solu):
     return sol
 
 
+# it's really slow...
 if __name__ == "__main__":
     data = pandas.read_csv("./data/small1.csv")
 
@@ -69,19 +70,19 @@ if __name__ == "__main__":
             return mismatch(fill_in(x, curr))
         fitness_function = genetic
 
-        num_generations = 600
-        num_parents_mating = 2
+        num_generations = 2000
+        num_parents_mating = 5
 
-        sol_per_pop = 30
+        sol_per_pop = 700
         num_genes = 81 - len(entries)
 
-        parent_selection_type = "sss"
-        keep_parents = 1
+        parent_selection_type = "rank"
+        keep_parents = 5
 
         crossover_type = "single_point"
 
         mutation_type = "random"
-        mutation_percent_genes = 7
+        mutation_percent_genes = 3
         instance = pygad.GA(num_generations=num_generations,
                             num_parents_mating=num_parents_mating,
                             fitness_func=fitness_function,
