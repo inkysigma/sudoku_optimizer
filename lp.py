@@ -80,14 +80,14 @@ def solve(p, integer=True):
     prob = cp.Problem(obj, const)
     err = prob.solve()
     if err >= 10e5:
-        return "".join()
+        return np.zeros((9, 9))
     return post_processing([v.value for v in x])
 
 
 if __name__ == "__main__":
 
     # We test the following algoritm on small data set.
-    data = pandas.read_csv("./data/small2.csv")
+    data = pandas.read_csv("./data/large2.csv")
 
     corr_cnt = 0
     start = time.time()
