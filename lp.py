@@ -60,7 +60,7 @@ def post_processing(board):
     return processed
 
 
-def solve(p, integer=True):
+def solve(entries, integer=True):
     """
     Accepts a list of entries at various positions
     """
@@ -70,7 +70,6 @@ def solve(p, integer=True):
             x.append(cp.Variable((9, 9), name=f'where are {i}', integer=True))
         else:
             x.append(cp.Variable((9, 9), name=f'where are {i}'))
-
     const = sudoku_constraint(x, entries)
     for v in x:
         const.append(v >= 0)
@@ -87,7 +86,7 @@ def solve(p, integer=True):
 if __name__ == "__main__":
 
     # We test the following algoritm on small data set.
-    data = pandas.read_csv("./data/large2.csv")
+    data = pandas.read_csv("./data/small1.csv")
 
     corr_cnt = 0
     start = time.time()

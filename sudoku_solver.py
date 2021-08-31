@@ -39,4 +39,7 @@ def solver(file_name: str):
     end = time.time()
     print("Aver Time: {t:6.2f} secs. Success rate: {corr} / {all} ".format(
         t=(end-start)/(round+1), corr=corr_cnt, all=round+1))
-    return corr_cnt / all
+    return corr_cnt / len(data)
+
+if __name__ == "__main__":
+    solver("data/small2.csv")
